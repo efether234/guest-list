@@ -1,3 +1,4 @@
+const config = require('config')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
@@ -17,7 +18,7 @@ userSchema.methods.generateAuthToken = function () {
     return jwt.sign({
         _id: this._id
     },
-    'privatekey')
+    config.get('jwtPrivateKey'))
 }
 
 module.exports.User = new mongoose.model('User', userSchema)
