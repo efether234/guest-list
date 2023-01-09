@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 const { Guest } = require('../../models/guest')
 const { User } = require('../../models/user')
 
+const logger = require('../../startup/logger')
+
 let server
 let token
 
@@ -11,6 +13,7 @@ describe('/api/guests', () => {
         server = require('../../index')
         token = new User().generateAuthToken()
     })
+
     afterEach(async () => {
         await server.close()
         await Guest.deleteMany({})
@@ -242,6 +245,76 @@ describe('/api/guests', () => {
 
             expect(res.body).toHaveProperty('_id')
             expect(res.body).toHaveProperty('firstName', newFirstName)
+        })
+    })
+
+    describe('PUT /:id/rsvp', () => {
+        let id
+        let email
+        let attending
+        let plusses
+        let dietaryRestrictions
+        let karaokeSong
+
+        const exec = async () => {
+            return await request(server)
+                .put('/api/guests/' + id + '/rsvp')
+                .send({
+                    email,
+                    attending,
+                    plusses,
+                    dietaryRestrictions,
+                    karaokeSong
+                })
+        }
+
+        beforeEach(async () => {
+            const guest = new Guest({
+                lastName: 'straw',
+                firstName: 'jack',
+                addedBy: new User()._id
+            })
+            await guest.save()
+
+            id = guest._id
+            email = 'a@b.c'
+            attending = true
+            plusses = 1
+            dietaryRestrictions = 'string'
+            karaokeSong = 'song'
+        })
+
+        afterEach(async () => {
+            await Guest.deleteMany({})
+        })
+
+        it('should update guest if rsvp is valid', async () => {
+            await exec()
+
+            const updatedGuest = await Guest.findById(id)
+
+            expect(updatedGuest.email).toBe('a@b.c')
+            expect(updatedGuest.attending).toBe(true)
+            expect(updatedGuest.plusses).toBe(1)
+            expect(updatedGuest.dietaryRestrictions).toBe('string')
+            expect(updatedGuest.karaokeSong).toBe('song')
+        })
+
+        it('should return updated guest if rsvp is valid', async () => {
+            const res = await exec()
+
+            expect(res.body).toHaveProperty('_id')
+            expect(res.body).toHaveProperty('email', 'a@b.c')
+            expect(res.body).toHaveProperty('attending', true)
+            expect(res.body).toHaveProperty('plusses', 1)
+            expect(res.body).toHaveProperty('dietaryRestrictions', 'string')
+            expect(res.body).toHaveProperty('karaokeSong', 'song')
+        })
+        it('should return 400 if rsvp is invalid', async () => {
+            id = mongoose.Types.ObjectId()
+            const res = await exec()
+
+            expect(res.status).toBe(400)
         })
     })
 

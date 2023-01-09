@@ -83,6 +83,23 @@ router.put('/:id', auth, async (req, res) => {
     res.send(guest)
 })
 
+router.put('/:id/rsvp', async (req, res) => {
+    logger.info('PUT /api/guests/rsvp/id')
+
+    const guest = await Guest.findById(req.params.id)
+
+    if (!guest) return res.status(400).send('No guest found')
+
+    guest.email = req.body.email
+    guest.attending = req.body.attending
+    guest.plusses = req.body.plusses
+    guest.dietaryRestrictions = req.body.dietaryRestrictions
+    guest.karaokeSong = req.body.karaokeSong
+    guest.save()
+
+    res.send(guest)
+})
+
 router.delete('/:id', auth, async (req, res) => {
     logger.info('DELETE /api/guests/id')
     const guest = await Guest.findByIdAndRemove(req.params.id).select('-__v')
