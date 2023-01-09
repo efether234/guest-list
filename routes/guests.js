@@ -30,6 +30,35 @@ router.post('/', auth, async (req, res) => {
     res.send(guest)
 })
 
+router.post('/search', async (req, res) => {
+    logger.info('POST /api/guests/search')
+
+    lastName = req.body.lastName
+    firstName = req.body.firstName === '' ? '.*' : new RegExp(req.body.firstName)
+
+    const guests = await Guest.find({
+        $and: [
+            { lastName: lastName },
+            { $or: [
+                {
+                    firstName: {
+                        $regex: firstName,
+                        $options: 'i'
+                    }
+                },
+                {
+                    otherNames: {
+                        $regex: firstName,
+                        $options: 'i'
+                    }
+                }
+            ]}
+        ]
+    })
+
+    res.send(guests)
+})
+
 router.put('/:id', auth, async (req, res) => {
     logger.info('PUT /api/guests/id')
     const guest = await Guest.findByIdAndUpdate(

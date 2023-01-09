@@ -10,7 +10,7 @@ const guestSchema = new mongoose.Schema({
         type: String,
         required: String
     },
-    otherNames: String,
+    otherNames: [String],
     email: {
         type: String,
         sparse: true,

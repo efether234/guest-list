@@ -99,7 +99,97 @@ describe('/api/guests', () => {
         })
     })
 
-    describe('PUT /_id', () => {
+    describe('POST /search', () => {
+        let lastName
+        let firstName
+
+        const exec = async () => {
+            return await request(server)
+                .post('/api/guests/search')
+                .send({ lastName, firstName })
+        }
+
+        beforeEach(async () => {
+            const userId = new User()._id
+            const guests = [
+                {
+                    lastName: 'doe',
+                    firstName: 'john',
+                    otherNames: ['judy'],
+                    addedBy: userId
+                },
+                {
+                    lastName: 'doe',
+                    firstName: 'jane',
+                    addedBy: userId
+                },
+                {
+                    lastName: 'straw',
+                    firstName: 'jack',
+                    addedBy: userId
+                }
+            ]
+
+            await Guest.collection.insertMany(guests)
+        })
+
+        it('should return multiple guests if only last name supplied and has multiple matches', async () => {
+            lastName = 'doe'
+            firstName = ''
+            const res = await exec()
+
+            expect(res.status).toBe(200)
+            expect(res.body.length).toBe(2)
+            expect(res.body.some(g => g.lastName === 'doe')).toBeTruthy()
+            expect(res.body.some(g => g.firstName === 'john')).toBeTruthy()
+            expect(res.body.some(g => g.firstName === 'jane')).toBeTruthy()
+        })
+
+        it('should return one guest if only last name supplied and has one match', async () => {
+            lastName = 'straw'
+            firstName = ''
+            const res = await exec()
+
+            expect(res.status).toBe(200)
+            expect(res.body.length).toBe(1)
+            expect(res.body.some(g => g.lastName === 'straw')).toBeTruthy()
+            expect(res.body.some(g => g.firstName === 'jack')).toBeTruthy()
+        })
+
+        it('should return one guest if last name and one "other name" match', async () => {
+            lastName = 'doe'
+            firstName = 'judy'
+            const res = await exec()
+
+            expect(res.status).toBe(200)
+            expect(res.body.length).toBe(1)
+            expect(res.body.some(g => g.lastName === 'doe')).toBeTruthy()
+            expect(res.body.some(g => g.firstName === 'john')).toBeTruthy()
+        })
+
+        it('should return guest(s) if first and last name are supplied', async () => {
+            lastName = 'doe'
+            firstName = 'jane'
+            const res = await exec()
+
+            expect(res.status).toBe(200)
+            expect(res.body.length).toBe(1)
+            expect(res.body.some(g => g.lastName === 'doe')).toBeTruthy()
+            expect(res.body.some(g => g.firstName === 'jane')).toBeTruthy()
+            expect(res.body.some(g => g.firstName !== 'john')).toBeTruthy()
+        })
+
+        it('should return 0 guests if database has no matches', async () => {
+            lastName = 'jones'
+            firstName = 'casey'
+            const res = await exec()
+
+            expect(res.status).toBe(200)
+            expect(res.body.length).toBe(0)
+        })
+    })
+
+    describe('PUT /:id', () => {
         let guest
         let id
         let newFirstName
@@ -193,7 +283,7 @@ describe('/api/guests', () => {
             expect(res.status).toBe(404)
         })
 
-        it('should delete the genre if input is valid', async () => {
+        it('should delete the guest if input is valid', async () => {
             await exec()
 
             const guestInDb = await Guest.findById(id)
@@ -201,7 +291,7 @@ describe('/api/guests', () => {
             expect(guestInDb).toBeNull()
         })
 
-        it('should return the removed genre', async () => {
+        it('should return the removed guest', async () => {
             const res = await exec()
 
             console.log(`NAME:: ${guest.name}`)
