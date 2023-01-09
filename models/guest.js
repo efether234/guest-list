@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { User } = require('../models/user')
 
 const guestSchema = new mongoose.Schema({
     lastName: {
@@ -21,15 +22,16 @@ const guestSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    maxPlusses: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     pluses: {
         type: Number,
         required: true,
         default: 0,
-        max: {
-            type: Number,
-            required: true,
-            default: 0
-        }
+        max: 10 // TODO:
     },
     dietaryRestrictions: {
         type: String,
