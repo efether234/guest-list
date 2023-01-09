@@ -13,14 +13,15 @@ router.get('/', auth, async (req, res) => {
     res.send(guests)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     if (!req.body.lastName || !req.body.firstName) return res.status(400).send('Names required')
 
     const guest = new Guest({
         lastName: req.body.lastName,
         firstName: req.body.firstName,
         otherNames: req.body.otherNames,
-        maxPluses: req.body.maxPlusses
+        maxPluses: req.body.maxPlusses,
+        addedBy: req.user
     })
 
     await guest.save()
@@ -28,7 +29,7 @@ router.post('/', async (req, res) => {
     res.send(guest)
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const guest = await Guest.findByIdAndUpdate(
         req.params.id,
         {
@@ -45,7 +46,7 @@ router.put('/:id', async (req, res) => {
     res.send(guest)
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     const guest = await Guest.findByIdAndRemove(req.params.id);
 
     if (!guest) return res.status(404).send('Guest not found')

@@ -44,7 +44,7 @@ const guestSchema = new mongoose.Schema({
     },
     addedBy: {
         type: mongoose.Types.ObjectId,
-        ref: 'User', // TODO
+        ref: 'User',
         required: true
     },
     dateCreated: {
