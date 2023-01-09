@@ -1,0 +1,27 @@
+{
+  "name": "guest-list",
+  "version": "0.0.1",
+  "description": "Simple guest list and RSVP manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/efether234/guest-list.git"
+  },
+  "author": "Evan Fetherolf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/efether234/guest-list/issues"
+  },
+  "homepage": "https://github.com/efether234/guest-list#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.8.3"
+  }
+}
