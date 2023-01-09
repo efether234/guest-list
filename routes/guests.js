@@ -14,6 +14,7 @@ router.get('/', auth, async (req, res) => {
 })
 
 router.post('/', auth, async (req, res) => {
+    logger.info('POST /api/guests/')
     if (!req.body.lastName || !req.body.firstName) return res.status(400).send('Names required')
 
     const guest = new Guest({
@@ -30,13 +31,20 @@ router.post('/', auth, async (req, res) => {
 })
 
 router.put('/:id', auth, async (req, res) => {
+    logger.info('PUT /api/guests/id')
     const guest = await Guest.findByIdAndUpdate(
         req.params.id,
         {
             lastName: req.body.lastName,
             firstName: req.body.firstName,
             otherNames: req.body.otherNames,
-            maxPlusses: req.body.maxPlusses
+            email: req.body.email,
+            attending: req.body.attending,
+            maxPlusses: req.body.maxPlusses,
+            plusses: req.body.plusses,
+            dietaryRestrictions: req.body.dietaryRestrictions,
+            karaokeSong: req.body.karaokeSong,
+            dateModified: Date.now()
         },
         { new: true }
     )
@@ -47,6 +55,7 @@ router.put('/:id', auth, async (req, res) => {
 })
 
 router.delete('/:id', auth, async (req, res) => {
+    logger.info('DELETE /api/guests/id')
     const guest = await Guest.findByIdAndRemove(req.params.id);
 
     if (!guest) return res.status(404).send('Guest not found')

@@ -13,8 +13,6 @@ const guestSchema = new mongoose.Schema({
     otherNames: String,
     email: {
         type: String,
-        minlength: 5,
-        maxlength: 256,
         sparse: true,
         unique: true
     },
@@ -28,7 +26,7 @@ const guestSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    pluses: {
+    plusses: {
         type: Number,
         required: true,
         default: 0,
@@ -45,17 +43,19 @@ const guestSchema = new mongoose.Schema({
     addedBy: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        immutable: true,
     },
     dateCreated: {
         type: Date,
         required: true,
-        default: Date.now
+        default: Date.now(),
+        immutable: true
     },
     dateModified: {
         type: Date,
         required: true,
-        default: Date.now
+        default: Date.now()
     }
 })
 

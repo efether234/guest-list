@@ -99,7 +99,63 @@ describe('/api/guests', () => {
         })
     })
 
-    describe('PUT /_id', () => {})
+    describe('PUT /_id', () => {
+        let userId
+        let guest
+        let id
+        let newFirstName
+
+        const exec = async () => {
+            return await request(server)
+                .put('/api/guests/' + id)
+                .set('X-Auth-Token', token)
+                .send({ firstName: newFirstName})
+        }
+
+        beforeEach(async () => {
+            userId = new User()._id
+            guest = new Guest({
+                lastName: 'lastName1',
+                firstName: 'firstName1',
+                addedBy: userId
+            })
+            await guest.save()
+
+            id = guest._id
+            newFirstName = 'newFirstName'
+        })
+
+        it('should return 401 if not logged in', async () => {
+            token = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(401)
+        })
+
+        it('should return 404 if id is invalid', async () => {
+            id = mongoose.Types.ObjectId()
+
+            const res = await exec()
+
+            expect(res.status).toBe(404)
+        })
+
+        it('should update the guest if input is valid', async () => {
+            await exec()
+
+            const updatedGuest = await Guest.findById(guest._id)
+
+            expect(updatedGuest.firstName).toBe(newFirstName)
+        })
+
+        it('should return updated guest if valid', async () => {
+            const res = await exec()
+
+            expect(res.body).toHaveProperty('_id')
+            expect(res.body).toHaveProperty('firstName', newFirstName)
+        })
+    })
 
     describe('DELETE /', () => {})
 })
