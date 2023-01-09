@@ -4,7 +4,7 @@ const { User } = require('../models/user')
 const guestSchema = new mongoose.Schema({
     lastName: {
         type: String,
-        required: true
+        required: true,
     },
     firstName: {
         type: String,
@@ -15,6 +15,7 @@ const guestSchema = new mongoose.Schema({
         type: String,
         minlength: 5,
         maxlength: 256,
+        sparse: true,
         unique: true
     },
     attending: {

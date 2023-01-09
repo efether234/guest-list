@@ -1,6 +1,7 @@
 const express = require('express')
+const guests = require('../routes/guests')
 
 module.exports = function(app) {
     app.use(express.json())
-    app.user('/api/guests', require('../routes/guests'))
+    app.use('/api/guests', guests)
 }

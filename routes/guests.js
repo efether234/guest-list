@@ -1,17 +1,19 @@
 const { Guest } = require('../models/guest')
 const auth = require('../middleware/auth')
 const express = require('express')
+const logger = require('../startup/logger')
 
 const router = express.Router()
 
 router.get('/', auth, async (req, res) => {
+    logger.info('GET /api/guests/')
     const guests = await Guest.find()
         .select('-__v')
         .sort('lastName')
     res.send(guests)
 })
 
-router.post('/', auth, async (req, res) => {
+router.post('/', async (req, res) => {
     if (!req.body.lastName || !req.body.firstName) return res.status(400).send('Names required')
 
     const guest = new Guest({
@@ -26,7 +28,7 @@ router.post('/', auth, async (req, res) => {
     res.send(guest)
 })
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', async (req, res) => {
     const guest = await Guest.findByIdAndUpdate(
         req.params.id,
         {
@@ -43,7 +45,7 @@ router.put('/:id', auth, async (req, res) => {
     res.send(guest)
 })
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const guest = await Guest.findByIdAndRemove(req.params.id);
 
     if (!guest) return res.status(404).send('Guest not found')
