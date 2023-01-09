@@ -100,7 +100,6 @@ describe('/api/guests', () => {
     })
 
     describe('PUT /_id', () => {
-        let userId
         let guest
         let id
         let newFirstName
@@ -113,11 +112,10 @@ describe('/api/guests', () => {
         }
 
         beforeEach(async () => {
-            userId = new User()._id
             guest = new Guest({
                 lastName: 'lastName1',
                 firstName: 'firstName1',
-                addedBy: userId
+                addedBy: new User()._id
             })
             await guest.save()
 
@@ -157,5 +155,60 @@ describe('/api/guests', () => {
         })
     })
 
-    describe('DELETE /', () => {})
+    describe('DELETE /', () => {
+        let id
+        let guest
+
+        const exec = async () => {
+            return await request(server)
+                .delete('/api/guests/' + id)
+                .set('X-Auth-Token', token)
+                .send()
+        }
+
+        beforeEach(async () => {
+            guest = new Guest({
+                lastName: 'lastName',
+                firstName: 'firstName',
+                addedBy: new User()._id
+            })
+            await guest.save()
+
+            id = guest._id
+        })
+
+        it('should return 401 if not logged in', async () => {
+            token = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(401)
+        })
+
+        it('should return 404 if no guest with id was found', async () => {
+            id = mongoose.Types.ObjectId()
+
+            const res = await exec()
+
+            expect(res.status).toBe(404)
+        })
+
+        it('should delete the genre if input is valid', async () => {
+            await exec()
+
+            const guestInDb = await Guest.findById(id)
+
+            expect(guestInDb).toBeNull()
+        })
+
+        it('should return the removed genre', async () => {
+            const res = await exec()
+
+            console.log(`NAME:: ${guest.name}`)
+
+            expect(res.body).toHaveProperty('_id', guest._id.toHexString())
+            expect(res.body).toHaveProperty('lastName', guest.lastName)
+            expect(res.body).toHaveProperty('firstName', guest.firstName)
+        })
+    })
 })

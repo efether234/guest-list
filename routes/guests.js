@@ -56,7 +56,7 @@ router.put('/:id', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
     logger.info('DELETE /api/guests/id')
-    const guest = await Guest.findByIdAndRemove(req.params.id);
+    const guest = await Guest.findByIdAndRemove(req.params.id).select('-__v')
 
     if (!guest) return res.status(404).send('Guest not found')
 
