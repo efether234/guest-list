@@ -1,5 +1,5 @@
 const express = require('express')
-const guests = require('../guests')
+const guests = require('../routes/guests')
 
 module.exports = function(app) {
     app.use(express.json())

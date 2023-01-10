@@ -1,7 +1,7 @@
-const { Guest } = require('../../models/guest')
+const { Guest } = require('../models/guest')
 const auth = require('../middleware/auth')
 const express = require('express')
-const logger = require('../../startup/logger')
+const logger = require('../startup/logger')
 
 const router = express.Router()
 
