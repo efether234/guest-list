@@ -40,12 +40,6 @@ const guestSchema = new mongoose.Schema({
         type: String,
         max: 50
     },
-    addedBy: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
-        required: true,
-        immutable: true,
-    },
     dateCreated: {
         type: Date,
         required: true,
