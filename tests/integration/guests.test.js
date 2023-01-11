@@ -82,6 +82,31 @@ describe('/api/guests', () => {
             expect(res.status).toBe(401)
         })
 
+        it('should return 400 if lastName not provided', async () => {
+            lastName = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(400)
+        })
+
+        it('should return 400 if firstName not provided', async () => {
+            firstName = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(400)
+        })
+
+        it('should return 400 if lastName and firstName are not provided', async () => {
+            lastName = ''
+            firstName = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(400)
+        })
+
         it('should save guest if valid', async () => {
             await exec()
 
@@ -118,18 +143,15 @@ describe('/api/guests', () => {
                 {
                     lastName: 'doe',
                     firstName: 'john',
-                    otherNames: ['judy'],
-                    addedBy: userId
+                    otherNames: ['judy']
                 },
                 {
                     lastName: 'doe',
-                    firstName: 'jane',
-                    addedBy: userId
+                    firstName: 'jane'
                 },
                 {
                     lastName: 'straw',
-                    firstName: 'jack',
-                    addedBy: userId
+                    firstName: 'jack'
                 }
             ]
 
@@ -207,8 +229,7 @@ describe('/api/guests', () => {
         beforeEach(async () => {
             guest = new Guest({
                 lastName: 'lastName1',
-                firstName: 'firstName1',
-                addedBy: new User()._id
+                firstName: 'firstName1'
             })
             await guest.save()
 
@@ -224,7 +245,7 @@ describe('/api/guests', () => {
             expect(res.status).toBe(401)
         })
 
-        it('should return 404 if id is invalid', async () => {
+        it('should return 404 if id doesnt exist', async () => {
             id = mongoose.Types.ObjectId()
 
             const res = await exec()
@@ -271,8 +292,7 @@ describe('/api/guests', () => {
         beforeEach(async () => {
             const guest = new Guest({
                 lastName: 'straw',
-                firstName: 'jack',
-                addedBy: new User()._id
+                firstName: 'jack'
             })
             await guest.save()
 
@@ -310,7 +330,8 @@ describe('/api/guests', () => {
             expect(res.body).toHaveProperty('dietaryRestrictions', 'string')
             expect(res.body).toHaveProperty('karaokeSong', 'song')
         })
-        it('should return 400 if rsvp is invalid', async () => {
+        
+        it('should return 400 if id doesnt match', async () => {
             id = mongoose.Types.ObjectId()
             const res = await exec()
 
@@ -332,8 +353,7 @@ describe('/api/guests', () => {
         beforeEach(async () => {
             guest = new Guest({
                 lastName: 'lastName',
-                firstName: 'firstName',
-                addedBy: new User()._id
+                firstName: 'firstName'
             })
             await guest.save()
 

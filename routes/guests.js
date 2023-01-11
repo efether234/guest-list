@@ -15,14 +15,17 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
     logger.info('POST /api/guests/')
-    if (!req.body.lastName || !req.body.firstName) return res.status(400).send('Names required')
+    if (!req.body.lastName || !req.body.firstName) return res.status(400).send('Error: first and last names are required')
 
     const guest = new Guest({
         lastName: req.body.lastName,
         firstName: req.body.firstName,
         otherNames: req.body.otherNames,
+        email: req.body.email,
         maxPluses: req.body.maxPlusses,
-        addedBy: req.user
+        plusses: req.body.plusses,
+        dietaryRestrictions: req.body.dietaryRestrictions,
+        karaokeSong: req.body.karaokeSong,
     })
 
     await guest.save()
