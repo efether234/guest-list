@@ -4,6 +4,7 @@ const logger = require('./startup/logger')
 
 const app = express()
 
+require('./startup/cors')(app)
 require('./startup/db')()
 require('./startup/routes')(app)
 
