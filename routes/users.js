@@ -1,3 +1,4 @@
+const config = require('config')
 const auth = require('../middleware/auth')
 const bcrypt = require('bcrypt')
 const _ = require('lodash')
@@ -14,8 +15,14 @@ router.get('/me', auth, async (req, res) => {
 
 router.post('/', async (req, res) => {
     logger.info('POST /api/users')
+
+    if (!req.body.username || req.body.password || req.body.secret) return res.status(400).send('Error: all fields required')
+
     let user = await User.findOne({ username: req.body.username })
     if (user) return res.status(400).send('User already registered')
+
+    let secret = req.body.secret
+    if(secret !== config.get('secretKey')) return res.status(400).send('Incorrect secret key')
 
     user = new User(_.pick(req.body, ['username', 'password']))
     const salt = await bcrypt.genSalt(10)

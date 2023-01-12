@@ -2,5 +2,6 @@
     "port": 5000,
     "db": "mongodb://localhost:27017/guest-list",
     "jwtPrivateKey": "6fnfdl8ywt6Ed4q5CqPpGJ9c",
-    "requiresAuth": false
+    "secretKey": "MMuAppq9Nx5kmWYm",
+    "requiresAuth": true
 }

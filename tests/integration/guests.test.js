@@ -3,8 +3,6 @@ const mongoose = require('mongoose')
 const { Guest } = require('../../models/guest')
 const { User } = require('../../models/user')
 
-const logger = require('../../startup/logger')
-
 let server
 let token
 
@@ -115,7 +113,7 @@ describe('/api/guests', () => {
                 firstName: 'firstName1'
             })
 
-            expect(guest).not.toBeNull();
+            expect(guest).not.toBeNull()
         })
 
         it('should return guest if valid', async () => {

@@ -1,5 +1,6 @@
 {
     "port": 5001,
     "jwtPrivateKey": "1234",
+    "secretKey": "secret",
     "db": "mongodb://localhost:27017/guestlist-testing"
 }
