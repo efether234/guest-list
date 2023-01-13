@@ -9,7 +9,7 @@ require('./startup/db')()
 require('./startup/routes')(app)
 require('./startup/prod')(app)
 
-const port = config.get('port')
+const port = process.env.PORT || config.get('port')
 const server = app.listen(port, () => {
     logger.info(`Now listening on port ${port}...`)
 })

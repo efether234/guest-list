@@ -1,5 +1,4 @@
 {
-    "port": "PORT",
     "db": "db",
     "jwtPrivateKey": "jwtPrivateKey",
     "secretKey": "secretKey"
