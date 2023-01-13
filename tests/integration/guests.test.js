@@ -243,6 +243,14 @@ describe('/api/guests', () => {
             expect(res.status).toBe(401)
         })
 
+        it('should return 404 if id is invalid', async () => {
+            id = ''
+
+            const res = await exec()
+
+            expect(res.status).toBe(404)
+        })
+
         it('should return 404 if id doesnt exist', async () => {
             id = mongoose.Types.ObjectId()
 
